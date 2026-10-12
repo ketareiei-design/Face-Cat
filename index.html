@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -65,9 +64,8 @@
     const loader = new GLTFLoader();
     loader.setDRACOLoader(dracoLoader);
 
-    // โมเดล GLB ของคุณจาก GitHub
-    const modelURL =
-      'https://raw.githubusercontent.com/ketareiei-design/Face-Texture/main/face%20AR.compressed.glb';
+    // เปลี่ยน URL ตรงนี้เป็นลิงก์ไฟล์ .glb หรือ .gltf ของคุณ
+    const modelURL = 'YOUR_MODEL_URL_HERE.glb';
 
     try {
       const gltf = await loader.loadAsync(modelURL);
@@ -105,12 +103,11 @@
         }
       });
 
-      // จับคู่ Blendshape ของกล้องกับชื่อ Morph Target ในโมเดล
-      // โมเดลนี้มีชื่อ Target เป็น EyeBlink L, EyeBlink R,
-      // mouth D และ mouth up
+      // จับคู่ Blendshape ของกล้องกับชื่อ Morph Target ใหม่ในโมเดลของคุณ
       const aliases = {
         eyeBlinkLeft: 'EyeBlink L',
-        eyeBlinkRight: 'EyeBlink R'
+        eyeBlinkRight: 'EyeBlink R',
+        jawOpen: 'mouth lower' // ปรับแมปค่าช่องปากตามโครงสร้าง glTF ของคุณ[cite: 1]
       };
 
       await mindar.start();
@@ -124,10 +121,8 @@
             const targetName =
               aliases[item.categoryName] ?? item.categoryName;
 
-            const index =
-              mesh.morphTargetDictionary[targetName];
-
-            if (index !== undefined) {
+            if (mesh.morphTargetDictionary && mesh.morphTargetDictionary[targetName] !== undefined) {
+              const index = mesh.morphTargetDictionary[targetName];
               mesh.morphTargetInfluences[index] = item.score;
             }
           }
